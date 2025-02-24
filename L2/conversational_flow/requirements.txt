@@ -1,0 +1,4 @@
+crewai-tools==0.36.0
+crewai==0.102.0
+tqdm==4.67.1
+pinecone==6.0.1
