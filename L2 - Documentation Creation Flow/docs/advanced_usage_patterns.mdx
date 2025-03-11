@@ -1,0 +1,173 @@
+## Task Composition
+
+Understanding how to create composite tasks consisting of smaller sub-tasks is an essential aspect of utilizing CrewAI effectively. In this section, we'll discuss the concept of task composition, which allows you to break down complex operations into manageable parts, making your applications more flexible and maintainable.
+
+### Overview of Task Composition
+
+In CrewAI, a `Task` represents a discrete unit of work. Tasks can have descriptions, expected outputs, and specific configurations, which guide their execution. The ability to compose tasks allows one to leverage existing smaller tasks to build larger, more complex workflows.
+
+### Implementing Task Composition
+
+You can create composite tasks by chaining multiple tasks together or by setting the context of one task to include the output of previous tasks. This allows for a clear flow of data and holds the potential for complex decision-making strategies based on the results of earlier tasks.
+
+#### Example: Chaining Multiple Tasks
+
+Below is an example of how you can create and sequentially execute multiple tasks within a Crew:
+
+```python
+# Define your agent and tasks
+from crewai.agents import MyAgent  # Assuming you've implemented an agent
+from crewai.tasks import Task
+
+# Create tasks
+task1 = Task(
+    description="Collect user information",
+    expected_output="Expected information format",
+    agent=MyAgent(),
+)
+
+task2 = Task(
+    description="Process user information",
+    expected_output="Processed information format",
+    agent=MyAgent(),
+)
+
+# Specify context to allow task2 to access task1's output
+task2.context = [task1]
+
+# Execute tasks
+task1_output = task1.execute_sync()
+task2_output = task2.execute_sync(context=task1_output)
+```
+
+### Benefits of Task Composition
+
+1. **Modularity**: Smaller tasks can be reused across different workflows, promoting code reuse.
+2. **Decoupling**: By separating concerns, each task can evolve independently without affecting others.
+3. **Clarity**: Clear descriptions and expected outputs make it easier to understand workflows as they grow in complexity.
+
+### Conclusion
+
+Task composition is a powerful feature of CrewAI that allows developers to create sophisticated behaviors by leveraging smaller, focused tasks. By combining these tasks, you can design workflows that are not only efficient but also straightforward to manage and modify. This approach aligns with CrewAI's philosophy of providing a flexible and high-performance framework for building autonomous AI agents.
+
+As you design composite tasks, consider how breaking functionality into smaller components can enhance the maintainability and clarity of your overall architecture.
+## Collaborative Agents
+
+In CrewAI, collaborative agents are designed to operate not in isolation but as a synchronized network where each agent can leverage the skills and knowledge of others. This capability is essential for complex tasks requiring diverse competencies and allows the system to achieve high-level automation.
+
+### Fundamentals of Collaboration
+
+Collaboration among agents in CrewAI enables:
+
+- **Information Sharing**: Agents can seamlessly communicate findings, ensuring all members are well-informed and can build upon shared knowledge.
+- **Task Assistance**: Agents can request assistance from peers when they encounter tasks outside their specific capabilities, facilitating a smoother workflow.
+- **Resource Management**: Efficient allocation and sharing of resources among agents optimize task performance.
+
+### Advanced Features for Supportive Collaboration
+
+The `Crew` class has been enhanced with various attributes that support advanced collaborative functionalities:
+
+| Feature                                    | Description                                                                                                                                                                                                                  |
+|:-------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Language Model Management**              | Both `manager_llm`, required for controlling hierarchical processes, and `function_calling_llm`, which is versatile based on tasks, are central to agent interactions.                                                     |
+| **Custom Manager Agent**                   | The ability to specify a custom agent as the manager, offering greater flexibility within the collaborative framework.                                                                                                   |
+| **Process Flow**                           | Enables the specification of execution logic, whether sequential or hierarchical, based on the collaboration needs.                                                                                                         |
+| **Logging and Telemetry**                  | Detailed logging capabilities (`verbose`) to monitor agent interactions, and usage metrics to analyze performance during collaboration.                                                                                |
+| **Memory Configuration**                   | On-demand memory capabilities help agents learn from previous interactions, promoting better performance in collaborative tasks.                                                                                         |
+| **Cache Management**                       | Opting in for cache on tool executions improves efficiency, while attributes like `output_log_file` enable detailed output logging during crew collaboration.                                                              |
+
+### Implementing Collaborative Features
+
+When implementing collaborative agents, it is crucial to strategically define the roles and capabilities of each participant within the crew. Collaboration becomes particularly effective when agents engage in delegation, where they can pass tasks to the most qualified peers for efficient problem solving.
+
+#### Example of Collaboration
+
+Imagine a scenario with a researcher agent tasked with gathering data and a writer agent compiling reports. By utilizing CrewAI's advanced management of language models, along with process flows, these agents can collaborate effectively—negotiating requests for data, questioning specific information, and deploying prompts intelligently.
+
+### Conclusion
+
+The collaborative capabilities of CrewAI’s agents represent a significant innovation in autonomous system design. By facilitating robust interactions and leveraging diverse skills within a crew, CrewAI enables sophisticated problem-solving strategies that enhance overall productivity and outcome quality. This ecosystem truly exemplifies the power of teamwork in the realm of artificial intelligence.
+## Integration with Tools
+
+In CrewAI, tools play a critical role in enhancing the capabilities of autonomous agents, allowing them to perform specific tasks efficiently. Integrating tools into your agent workflows can facilitate complex operations and promote higher levels of automation. This section provides an overview of tool integration within CrewAI, relevant documentation, and examples for effective use.
+
+### Overview of Tools
+
+Tools in CrewAI can be categorized into structured tools and agent tools, each serving specific functionalities. 
+
+- **Structured Tools**: These tools follow predefined schemas and are designed to work within specific parameters. The `BaseTool` class provides the foundational structure for all tools implemented in CrewAI. 
+
+- **Agent Tools**: These extend the functionality of base tools, allowing agents to delegate tasks or ask questions based on provided contexts. The `BaseAgentTool` serves as a parent class for tools such as `AskQuestionTool` and `DelegateWorkTool`.
+
+### Implementing a Tool
+
+As an example, let's implement a simple tool that allows an agent to ask questions based on context. Below is a sample tool implementation using the `AskQuestionTool`:
+
+```python
+from typing import Optional
+from pydantic import BaseModel, Field
+from crewai.tools.agent_tools.base_agent_tools import BaseAgentTool
+
+class AskQuestionToolSchema(BaseModel):
+    question: str = Field(..., description="The question to ask")
+    context: str = Field(..., description="The context for the question")
+    coworker: str = Field(..., description="The role/name of the coworker to ask")
+
+class AskQuestionTool(BaseAgentTool):
+    """Tool for asking questions to coworkers"""
+
+    name: str = "Ask question to coworker"
+    args_schema: type[BaseModel] = AskQuestionToolSchema
+
+    def _run(
+        self,
+        question: str,
+        context: str,
+        coworker: Optional[str] = None,
+        **kwargs,
+    ) -> str:
+        coworker = self._get_coworker(coworker, **kwargs)
+        return self._execute(coworker, question, context)
+```
+
+In the `AskQuestionTool`, we define the input schema using Pydantic, which ensures validated input. The main action of this tool is implemented in the `_run` method, where an agent can ask a question to a specified coworker based on the given context.
+
+### Integrating Tools into Agents
+
+To utilize the `AskQuestionTool`, you simply need to instantiate the tool and invoke it from an agent.
+
+```python
+question_tool = AskQuestionTool()
+output = question_tool.run(question="What is the project deadline?", context="Discussing project timelines.", coworker="ProjectManager")
+```
+
+### Example of Delegating Work
+
+Similar integration can be accomplished using the `DelegateWorkTool`, which allows agents to assign tasks to coworkers. Below is a basic implementation:
+
+```python
+class DelegateWorkToolSchema(BaseModel):
+    task: str = Field(..., description="The task to delegate")
+    context: str = Field(..., description="The context for the task")
+    coworker: str = Field(..., description="The role/name of the coworker to delegate to")
+
+class DelegateWorkTool(BaseAgentTool):
+    """Tool for delegating work to coworkers"""
+
+    name: str = "Delegate work to coworker"
+    args_schema: type[BaseModel] = DelegateWorkToolSchema
+
+    def _run(
+        self,
+        task: str,
+        context: str,
+        coworker: Optional[str] = None,
+        **kwargs,
+    ) -> str:
+        coworker = self._get_coworker(coworker, **kwargs)
+        return self._execute(coworker, task, context)
+```
+
+### Conclusion
+
+The ability to integrate tools into CrewAI agents significantly enhances their functionality, facilitating automation and collaboration. Utilize the above patterns to create scalable and effective tools within your agent workflows, ensuring clear communication and task delegation among agents. By leveraging these tools effectively, you can maximize the potential of your AI agents within CrewAI.

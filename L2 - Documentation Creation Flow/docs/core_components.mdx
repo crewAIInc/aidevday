@@ -1,0 +1,223 @@
+## Agents
+
+Agents are the core components of CrewAI, designed to execute tasks within the framework. They represent individual autonomous units capable of decision-making, utilizing tools, and collaborating to achieve specified goals.
+
+### Overview
+
+In CrewAI, an agent is not simply a code that executes commands; it encompasses a wider array of functionalities aimed at high-level automation. Agents are designed to perform various tasks, interact with different systems, and manage a flow of operations that depend on their assigned roles and goals.
+
+### Architecture of Agents
+
+Agents are defined through a class structure in the codebase, particularly in the `agent.py` file, where the `Agent` class is implemented.
+
+Here are key attributes and their roles:
+- **Role**: Defines the specific responsibility of the agent (e.g., "Data Scientist").
+- **Goal**: The main objective the agent aims to achieve (e.g., "Analyze data").
+- **Backstory**: Offers context about the agent's background, enhancing its execution capability by providing personality.
+- **Language Model (LLM)**: Specifies the model that powers the agent's reasoning and task execution.
+- **Tools**: A list of available tools that the agent can use to complete tasks, empowering it with specialized capabilities.
+- **Memory**: Allows the agent to retain useful context and learning from previous interactions.
+
+### Functionalities
+
+1. **Task Execution**: Agents can execute predefined tasks using the `execute_task` method, incorporating tools and context to optimize performance. 
+   ```python
+   result = agent.execute_task(task, context={"input": "data"})
+   ```
+   
+2. **Contextual Awareness**: Agents utilize context for decision-making, drawing upon previous interactions stored in memory.
+
+3. **Collaboration**: Agents can delegate tasks to other agents, fostering an environment of cooperation. This is controlled by an attribute, `allow_delegation`.
+
+4. **Custom Tools**: Agents can leverage tools tailored for specific tasks. For example, agents might possess tools for data retrieval or code execution:
+   ```python
+   from crewai_tools import SerperDevTool
+
+   agent.tools.append(SerperDevTool())
+   ```
+
+### Code Example
+
+The creation of an agent can be accomplished in two ways: YAML configuration or direct code definition. Here’s how you would define an agent directly in code:
+```python
+from crewai import Agent
+
+data_scientist = Agent(
+    role="Data Scientist",
+    goal="Analyze and visualize data findings",
+    backstory="Analyzing trends for over 7 years",
+    llm="gpt-4",
+    tools=[SerperDevTool()],
+    memory=True
+)
+```
+In this example, a `Data Scientist` agent is created with a specific goal, LLM, and tool capabilities.
+
+### Best Practices
+
+- Ensure that agents have clearly defined roles and goals to avoid ambiguity in task execution.
+- Utilize memory to allow agents to learn from past tasks and improve interaction quality.
+- Enable appropriate tools based on the agent's defined role to enhance efficiency and effectiveness.
+
+By structuring agents correctly within CrewAI, users can expect a robust, versatile system capable of handling autonomous tasks effortlessly.
+
+### Conclusion
+
+Agents are essential to the CrewAI framework, serving as the driving force behind task execution and decision-making. Their architecture and functionalities enable high levels of automation and flexibility, aligning perfectly with the project's goals of efficiency and performance.
+## Tasks
+
+In CrewAI, tasks represent the fundamental units of work performed by agents within the framework. Each task is defined to accomplish specific objectives and they can vary in complexity and requirements, often being dependent on one another to achieve higher-level goals.
+
+### Overview of Tasks
+
+Tasks in CrewAI can be executed in a sequential or conditional manner, allowing for dynamic workflows that adapt based on the conditions or outputs of previous tasks. This flexibility empowers agents to operate efficiently in a variety of scenarios.
+
+### Architecture of Tasks
+
+The main components of tasks include:
+
+- **Task Class**: The primary base class for defining a task.
+- **Task Output**: Every task produces output, encapsulated by the `TaskOutput` class, which includes various fields to store relevant information.
+- **Conditional Tasks**: Tasks that are executed based on the results of previous tasks, providing a mechanism for adaptive workflows.
+
+### TaskOutput Class
+
+The `TaskOutput` class captures the result of a task execution, encapsulating details such as:
+
+- `description`: A textual description of the task.
+- `name`: An optional name for the task.
+- `expected_output`: What the task is designed to produce.
+- `summary`: A brief summary generated from the description.
+- `raw`: The raw output produced by the task.
+- `pydantic`: An optional representation of the output using Pydantic.
+- `json_dict`: A JSON representation of the output.
+- `agent`: The agent executing the task.
+- `output_format`: The structure of the output.
+
+Here's an example of the `TaskOutput` class:
+
+```python
+class TaskOutput(BaseModel):
+    description: str
+    name: Optional[str]
+    expected_output: Optional[str]
+    summary: Optional[str]
+    raw: str
+    pydantic: Optional[BaseModel]
+    json_dict: Optional[Dict[str, Any]]
+    agent: str
+    output_format: OutputFormat
+```
+
+### ConditionalTask Class
+
+Conditional tasks in CrewAI allow for certain tasks to be executed only when specified conditions are met, providing a way to branch the workflow based on previous outcomes. 
+
+An example of a conditional task can be seen in the `ConditionalTask` class:
+
+```python
+class ConditionalTask(Task):
+    condition: Callable[[TaskOutput], bool]
+
+    def should_execute(self, context: TaskOutput) -> bool:
+        return self.condition(context)
+```
+
+### Best Practices
+
+1. **Clearly Define Conditions**: When using conditional tasks, ensure that the conditions are well-defined to avoid unintended skips in the workflow.
+2. **Document Task Outputs**: Clearly document the output expectations of each task to maintain clarity and traceability in complex workflows.
+3. **Utilize Task Outputs**: Leverage the capabilities of the `TaskOutput` class to manage and utilize task outputs effectively.
+
+### Conclusion
+
+Tasks are the building blocks of the CrewAI framework, providing both structure and flexibility to how agents operate. By understanding and effectively utilizing tasks, users can create complex automation workflows that are responsive to various inputs and outputs, ultimately enhancing the capabilities of autonomous AI agents.
+## Crews
+
+In CrewAI, a crew is a collective of agents collaborating to execute a defined set of tasks. Crews are essential for managing agent workflows and providing structured approaches to task execution, thereby enhancing the system's ability to accomplish higher-order goals.
+
+### Overview of Crews
+
+A crew serves as a management layer over individual agents, enabling coordinated task execution. Crews are designed to facilitate collaboration among agents by defining roles and responsibilities, maintaining context, and ensuring efficient communication.
+
+### Attributes of a Crew
+
+Crews consist of several key attributes that define their configuration and behavior:
+
+- **Agents**: The individual agents assigned to the crew, each with specific roles, goals, and functionalities.
+- **Tasks**: The specific tasks that the crew must complete, which are assigned to the agents according to their capabilities.
+- **Process**: The workflow strategy employed by the crew to execute tasks, which can be sequential or hierarchical.
+- **Manager Agent**: In hierarchical processes, this agent oversees the task execution, coordinating actions and ensuring tasks align with overall crew objectives.
+
+### Functionalities of Crews
+
+1. **Task Execution**: Crews can execute multiple tasks simultaneously or in a predefined sequence, allowing for flexibility depending on the requirements of the project.
+   
+2. **Agent Collaboration**: Crews enhance collaboration among agents. They can share context, knowledge, and delegate tasks as needed to optimize performance.
+
+3. **Memory Utilization**: Crews utilize memory functions to retain important context and learning, allowing agents to recall information from previous interactions that can influence current task execution.
+
+4. **Cache Utilization**: Crews can utilize caching strategies to store the outputs of tools, ensuring efficient re-execution of tasks without unnecessary processing.
+
+### Crew Configuration
+
+Crews can be configured in two primary ways: through YAML configuration files or by defining them directly in code.
+
+#### YAML Configuration
+
+Utilizing YAML files allows for a more maintainable and organized definition of crews, separating configuration from code. Below is an example:
+
+```yaml
+crews:
+  - name: Research Team
+    agents:
+      - name: Data Analyst
+        goal: Analyze market trends
+        verbose: true
+      - name: Market Researcher
+        goal: Gather market insights
+        verbose: true
+    tasks:
+      - description: Compile the latest market data.
+        expected_output: A comprehensive market analysis report.
+    process: sequential
+```
+
+#### Direct Code Definition
+
+Crews can also be defined directly in Python code, providing more granular control over configurations. Here’s a sample:
+
+```python
+from crewai import Crew, Agent, Task
+
+class ResearchTeam(Crew):
+    def agent_one(self) -> Agent:
+        return Agent(role="Data Analyst", goal="Analyze market trends")
+
+    def agent_two(self) -> Agent:
+        return Agent(role="Market Researcher", goal="Gather market insights")
+
+    def task_one(self) -> Task:
+        return Task(description="Compile the latest market data.")
+
+    def create_crew(self) -> Crew:
+        return Crew(agents=[self.agent_one(), self.agent_two()],
+                    tasks=[self.task_one()],
+                    process='sequential')
+```
+
+### Crew Execution
+
+Crews are kicked off using the `kickoff()` method, which initiates the defined task execution process. Here is an example:
+
+```python
+crew = ResearchTeam()
+crew_output = crew.kickoff()
+print(crew_output)
+```
+
+Crews can also support advanced execution methods like asynchronous execution or task-specific configurations, allowing for greater flexibility in workflow management.
+
+### Conclusion
+
+Crews in CrewAI provide a structured mechanism for coordinating the efforts of multiple agents. By enabling efficient task execution and fostering collaboration, crews enhance the framework's capabilities, aligning perfectly with CrewAI's overarching goal of high-level automation and flexibility in agent-based programming.

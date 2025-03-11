@@ -1,0 +1,241 @@
+# Installation
+
+## Getting Started with CrewAI
+
+To help users quickly set up and run their first CrewAI instance, follow these steps to install CrewAI and its dependencies.
+
+### Prerequisites
+
+Ensure you have a basic understanding of Python. CrewAI requires **Python >=3.10 and <3.13**. To check your Python version, run:
+
+```bash
+python3 --version
+```
+
+If you need to update Python, visit [python.org/downloads](https://python.org/downloads).
+
+### Step 1: Install `uv`
+
+CrewAI utilizes `uv` for dependency and package management. If `uv` is not installed, you can install it using the following commands:
+
+- **On macOS/Linux:**
+  
+  Use `curl`:
+
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+
+  If `curl` is not available, you can use `wget`:
+
+  ```bash
+  wget -qO- https://astral.sh/uv/install.sh | sh
+  ```
+
+- **On Windows:**
+
+  Execute the following in PowerShell:
+
+  ```bash
+  powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+  ```
+
+Refer to [UV's installation guide](https://docs.astral.sh/uv/getting-started/installation/) if you encounter any issues.
+
+### Step 2: Install CrewAI
+
+Once `uv` is installed, run the following command to install the `crewai` CLI:
+
+```bash
+uv tool install crewai
+```
+
+If you receive a `PATH` warning, you can resolve it by running:
+
+```bash
+uv tool update-shell
+```
+
+To confirm that CrewAI has been successfully installed, list your tools:
+
+```bash
+uv tools list
+```
+
+You should see `crewai` listed, indicating a successful installation. Now you're ready to create your first AI crew!
+
+### Creating a CrewAI Project
+
+To efficiently structure your agents and tasks, it's recommended to use the `YAML` template scaffolding. To start:
+
+1. Generate project scaffolding by running:
+
+    ```bash
+    crewai create crew <your_project_name>
+    ```
+
+   This will create a new project with the following structure:
+
+   ```
+   my_project/
+   ├── .gitignore
+   ├── knowledge/
+   ├── pyproject.toml
+   ├── README.md
+   ├── .env
+   └── src/
+       └── my_project/
+           ├── __init__.py
+           ├── main.py
+           ├── crew.py
+           ├── tools/
+           │   ├── custom_tool.py
+           │   └── __init__.py
+           └── config/
+               ├── agents.yaml
+               └── tasks.yaml
+   ```
+
+2. Customize your project by editing `agents.yaml` and `tasks.yaml` to define agent behaviors and workflows. Keep sensitive information like API keys in the `.env`.
+
+3. Before running your crew, ensure everything is set up by executing:
+
+   ```bash
+   crewai install
+   ```
+
+   To add any additional packages, use:
+
+   ```bash
+   uv add <package-name>
+   ```
+
+4. Finally, run your crew with:
+
+   ```bash
+   crewai run
+   ```
+
+### Next Steps
+
+- **Build Your First Agent**: Follow the quickstart guide to create your first CrewAI agent and gain hands-on experience.
+- **Join the Community**: Connect with other developers for assistance and to share your CrewAI experiences.
+## First Steps
+
+To help users quickly set up and run their first CrewAI instance, follow these steps to install CrewAI and its dependencies.
+
+### Prerequisites
+
+Ensure you have a basic understanding of Python. CrewAI requires **Python >=3.10 and <3.13**. To check your Python version, run:
+
+```bash
+python3 --version
+```
+
+If you need to update Python, visit [python.org/downloads](https://python.org/downloads).
+
+### Step 1: Install `uv`
+
+CrewAI utilizes `uv` for dependency and package management. If `uv` is not installed, you can install it using the following commands:
+
+- **On macOS/Linux:**
+
+  Use `curl`:
+
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+
+  If `curl` is not available, you can use `wget`:
+
+  ```bash
+  wget -qO- https://astral.sh/uv/install.sh | sh
+  ```
+
+- **On Windows:**
+
+  Execute the following in PowerShell:
+
+  ```bash
+  powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+  ```
+
+Refer to [UV's installation guide](https://docs.astral.sh/uv/getting-started/installation/) if you encounter any issues.
+
+### Step 2: Install CrewAI
+
+Once `uv` is installed, run the following command to install the `crewai` CLI:
+
+```bash
+uv tool install crewai
+```
+
+If you receive a `PATH` warning, you can resolve it by running:
+
+```bash
+uv tool update-shell
+```
+
+To confirm that CrewAI has been successfully installed, list your tools:
+
+```bash
+uv tools list
+```
+
+You should see `crewai` listed, indicating a successful installation. Now you're ready to create your first AI crew!
+
+### Step 3: Creating a CrewAI Project
+
+To efficiently structure your agents and tasks, it's recommended to use the YAML template scaffolding.
+
+1. Generate project scaffolding by running:
+
+    ```bash
+    crewai create crew <your_project_name>
+    ```
+
+    This will create a new project with the following structure:
+
+    ```
+    my_project/
+    ├── .gitignore
+    ├── pyproject.toml
+    ├── README.md
+    ├── .env
+    └── src/
+        └── my_project/
+            ├── __init__.py
+            ├── main.py
+            ├── crew.py
+            ├── tools/
+            │   ├── custom_tool.py
+            │   └── __init__.py
+            └── config/
+                ├── agents.yaml
+                └── tasks.yaml
+    ```
+
+2. Customize your project by editing `src/my_project/config/agents.yaml` and `src/my_project/config/tasks.yaml` to define agent behaviors and workflows. Keep sensitive information like API keys in the `.env`.
+
+3. Before running your crew, ensure everything is set up by executing:
+
+    ```bash
+    crewai install
+    ```
+
+   To add any additional packages, use:
+
+   ```bash
+   uv add <package-name>
+   ```
+
+4. Finally, run your crew with:
+
+   ```bash
+   crewai run
+   ```
+
+### Next Steps
+
+- **Build Your First Agent**: Follow the quickstart guide to create your first CrewAI agent and gain hands-on experience.
+- **Join the Community**: Connect with other developers for assistance and to share your CrewAI experiences.

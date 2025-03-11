@@ -1,0 +1,121 @@
+research_task:
+  description: >
+    Conduct strategic intelligence gathering on the upcoming meeting about {topic} with {participants}.
+
+    Your objective is to uncover insights that will give our executive a competitive advantage:
+
+    1. Topic analysis:
+       - Core business implications of {topic}
+       - Latest developments and emerging trends (within last 3 months)
+       - Competitive landscape and market position
+
+    2. Participant intelligence:
+       - Professional background and current role of each participant
+       - Recent statements, publications, or positions on {topic}
+       - Personal communication style and decision-making patterns
+       - Relationships with other participants (alliances, tensions)
+
+    3. Strategic context:
+       - Identify potential hidden agendas or unstated objectives
+       - Map potential areas of alignment and conflict
+       - Highlight political or organizational dynamics at play
+
+    Focus on quality over quantity. Prioritize information that directly impacts meeting objectives.
+
+  expected_output: >
+    A comprehensive intelligence report with the following sections:
+
+    1. EXECUTIVE SUMMARY (250 words max): Key findings and strategic implications
+
+    2. TOPIC ANALYSIS (500 words max):
+       - Current state and developments
+       - Strategic importance and business implications
+       - Risk/opportunity assessment
+
+    3. PARTICIPANT PROFILES (250 words per participant):
+       - Professional summary and relevant expertise
+       - Position on the topic and likely objectives
+       - Communication style and strategic approach
+
+    4. STRATEGIC CONSIDERATIONS (500 words max):
+       - Potential alliance opportunities
+       - Anticipated objections or concerns
+       - Critical knowledge gaps requiring clarification
+
+    Use bullet points, tables, and visual organization to enhance readability.
+
+  agent: researcher
+  context: >
+    This research will directly inform our executive's approach to the meeting.
+    Accuracy and strategic relevance are your top priorities. The briefing specialist
+    will use your research to create the final briefing document, so ensure your
+    information is comprehensive and well-structured.
+
+  tools: ["web_search", "document_analysis"]
+
+preparation_task:
+  description: >
+    Create a strategic meeting brief based on the intelligence report for our executive's
+    upcoming meeting on {topic} with {participants}.
+
+    Your objective is to transform the research into an action-oriented brief that:
+    1. Can be reviewed in under 10 minutes
+    2. Provides clear guidance on approach and strategy
+    3. Anticipates scenarios and provides response frameworks
+
+    Your brief should include:
+
+    1. Meeting intelligence:
+       - Strategic objective of the meeting (what we want to achieve)
+       - Key decision-makers and their likely positions
+       - Critical background context executive must know
+
+    2. Communication strategy:
+       - 3-5 key talking points aligned with objectives
+       - Tailored messaging for each key participant
+       - Recommended framing for potentially contentious issues
+
+    3. Scenario planning:
+       - Likely questions with concise, effective responses
+       - Potential objections with counter-arguments
+       - Hidden agenda items to be prepared for
+
+    4. Action framework:
+       - Proposed meeting flow and key moments
+       - Decision triggers and fallback positions
+       - Specific follow-up commitments to propose
+
+  expected_output: >
+    A strategic meeting brief document with these components:
+
+    1. ONE-PAGER OVERVIEW:
+       - Meeting objective and success criteria
+       - Critical background in 3-5 bullet points
+       - Top 3 recommended strategies or approaches
+
+    2. PARTICIPANT STRATEGY (one section per participant):
+       - Key interests and potential positions
+       - Tailored messaging approach
+       - Specific points of leverage or concern
+
+    3. TALKING POINTS AND RESPONSES:
+       - Prioritized talking points with supporting data
+       - Anticipated questions with concise responses
+       - Objection handling frameworks
+
+    4. EXECUTION PLAN:
+       - Recommended meeting flow
+       - Critical decision points
+       - Proposed next steps and commitments
+
+    Format must be highly scannable with visual hierarchy, using headers,
+    bullet points, tables, and highlighting for key elements.
+
+  agent: analyst
+  context: >
+    This brief will be the primary reference document during the meeting.
+    It must be comprehensive yet concise, focusing on actionable guidance rather than
+    background information. The executive may only have 5-10 minutes to review this
+    document before the meeting, so clarity and scannability are essential.
+
+  tools: ["document_formatting", "summarization"]
