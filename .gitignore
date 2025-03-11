@@ -1,3 +1,5 @@
+.codesight
+
 # ignore wandb cache
 **/wandb/*
 **/artifacts/*
