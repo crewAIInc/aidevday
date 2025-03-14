@@ -1,0 +1,71 @@
+movie_information_task:
+  description: >
+    Retrieve and provide detailed factual information about the last message in the user's history:
+
+
+
+    Conversation history:
+
+
+    {user_history}
+
+
+    Include relevant details such as:
+
+    - Production information (year, director, studio)
+
+    - Cast and characters
+
+    - Plot summary (without major spoilers)
+
+    - Critical reception and cultural impact
+
+    - Interesting trivia
+
+
+    You can query the databricks table `netflix_data` to retrieve factual information about the movie.
+
+
+    Focus on delivering accurate and comprehensive information that directly answers
+    the user's query about the film.
+  expected_output: >
+    A clear, well-structured response containing accurate information about the requested movie.
+    The information should be presented in an engaging and informative manner that enhances
+    the customer's understanding of the film.
+  agent: movie_information_agent
+
+movie_recommendation_task:
+  description: >
+    Analyze the user's preferences and provide personalized movie recommendations based on the last message in the user's history:
+
+
+
+    Conversation history:
+
+
+    {user_history}
+
+
+    Consider the following factors when making recommendations:
+
+    - Genre preferences and viewing history
+
+    - Thematic elements and mood
+
+    - Similar movies to ones they've enjoyed
+
+    - Critically acclaimed or popular options
+
+    - Diverse suggestions across different eras and styles
+
+
+    You can query the databricks table `netflix_data` to retrieve factual information about movies.
+
+
+    Focus on delivering thoughtful, personalized recommendations that match the user's
+    expressed interests and preferences.
+  expected_output: >
+    A set of personalized movie recommendations that align with the user's preferences and interests.
+    Each recommendation should include a brief explanation of why it was selected and how it
+    relates to the user's query or previous viewing history.
+  agent: movie_recommendation_agent
